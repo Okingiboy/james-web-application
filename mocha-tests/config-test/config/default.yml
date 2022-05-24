@@ -1,0 +1,14 @@
+use: default.yml
+staging: TEST
+loglevel: info
+easy-web-app:
+  port: 8900
+  rootPath: example
+  enableSecurity: false
+  enableCustomCSS: true
+  loginTimeout: 2000
+  img-cust: img
+  logoURL: img-cust/funnyLogo.png
+  logoText: Config-Example
+  title: Config-Example
+  copyrightText: by MH (c) 2018

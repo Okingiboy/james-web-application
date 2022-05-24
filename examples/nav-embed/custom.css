@@ -1,0 +1,23 @@
+#NavContent {
+  height: 33px;
+}
+.pongNavEmbedNavContent {
+  border-top-width: 3px;
+  border-bottom-width: 3px;
+  border-top-style: solid;
+  border-color: #bbb;
+  width:32%
+}
+.pongNavEmbedSubNavContent {
+  width:24%;
+}
+#NavContentpongNavEmbed_Div .pongNavEmbedActive {
+  border-style: dotted;
+  border-color: #444;
+  color: #222;
+}
+
+#SubNavContentpongNavEmbed_Div .pongNavEmbedActive {
+  color: #222;
+  text-decoration: underline #222;
+}

@@ -1,0 +1,187 @@
+/* You can add all your custom styles here */
+body {
+	font-family: "Trebuchet MS", "Helvetica", "Arial", "Verdana",
+		"sans-serif";
+}
+
+
+#row1viewContentPongList .pongListRow {
+	border-top-width: 1px; 
+	border-top-style: solid;
+	height: 100px;
+}
+.pongListCellID {
+	width: 100px;
+	height: 50px;
+	text-align: center;
+	font-size: 20pt;
+}
+.pongListCellXCust {
+	width: 100px;
+}
+
+.pongListCellCustomerCountLb {
+	width: 100px;
+	text-align: center;
+	color: #888;
+}
+.pongListCellCustomerCount {
+	width: 100px;
+	font-size: 16pt;
+	text-align: center;
+}
+
+.cellRating {
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}
+.pongListCellXRating {
+	width: 100px;
+}
+.pongListCellRatingLb {
+	width: 100px;
+	text-align: center;
+	color: #888;
+}
+.pongListCellRating {
+	width: 100px;
+}
+
+.pongListCellXSize {
+	width: 120px;
+	text-align: center;
+}
+.pongListCellSizelb {
+	width: 120px;
+	text-align: center;
+	color: #888;
+}
+.pongListCellSlb {
+	width: 35px;
+	padding-right: 5px;
+	text-align: right;
+}
+.pongListCellMlb {
+	width: 35px;
+	padding-right: 5px;
+	text-align: right;
+}
+.pongListCellLlb {
+	width: 35px;
+	padding-right: 5px;
+	text-align: right;
+}
+.pongListCellSizeS {
+	width:35px;
+	padding-left: 5px;
+	text-align: left;
+}
+.pongListCellSizeM {
+	width:35px;
+	padding-left: 5px;
+	text-align: left;
+}
+.pongListCellSizeL {
+	width:35px;
+	padding-left: 5px;
+	text-align: left;
+}
+.pongListCellSizeStrend {
+	width:20px;
+}
+.pongListCellSizeMtrend {
+	width:20px;
+}
+.pongListCellSizeLtrend {
+	width:20px;
+}
+
+.pongListCellXAvail {
+	width: 100px;
+	text-align: center;
+}
+.pongListCellAvailabilityLb {
+	width: 100px;
+	color: #888;
+}
+.pongListCellAvailability  {
+	width: 100px;
+	font-size: 16pt;
+}
+
+
+.pongListCellXOrders { 
+	text-align: center;
+	width: 200px;
+}
+.pongListCellOrderslb { 
+	width: 200px;
+	color: #888;
+}
+.pongListCellOrdersDlb { 
+	width: 100px;
+	text-align: left; 
+}
+.pongListCellOrdersWlb { 
+	width: 100px;
+	text-align: left; 
+}
+.pongListCellOrdersMlb { 
+	width: 100px;
+	text-align: left; 
+}
+.pongListCellOrdersD {
+	width: 40px;
+	text-align: right; 
+	padding-right: 10px;
+	font-weight: bold;
+}
+.pongListCellOrdersW {
+	width: 40px;
+	text-align: right; 
+	padding-right: 10px;
+	font-weight: bold;
+}
+.pongListCellOrdersM {
+	width: 40px;
+	text-align: right; 
+	padding-right: 10px;
+	font-weight: bold;
+}
+.pongListCellOrdersDtrend {
+	width: 20px;
+}
+.pongListCellOrdersWtrend {
+	width: 20px;
+}
+.pongListCellOrdersMtrend {
+	width: 20px;
+}
+
+.pongListCellXSizeG {
+	width: 100px;
+}
+.pongListCellSizeGlb {
+	width: 100px;
+	color: gray;
+	text-align: center;
+}
+.pongListCellSizeStat {
+	width:100px;
+	height: 50px;
+}
+
+.pongListCellXUsage{
+	width: 100px;
+}
+.pongListCellUsageLb {
+	width: 100px;
+	color: gray;
+	text-align: center;
+}
+.pongListCellUsage {
+	width: 150px;
+	height: 80px;
+}
+

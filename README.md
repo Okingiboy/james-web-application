@@ -1,69 +1,226 @@
-# Readme
+# Easy Web App
+Create web applications easily and reduce complexity.
 
-[![Join the chat at https://gitter.im/avniproject/avni-webapp](https://badges.gitter.im/avniproject/avni-webapp.svg)](https://gitter.im/avniproject/avni-webapp?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+**No GUI programming required!** The **Web GUI is defined by JSON**, static files or served via REST service.
+Create complex and full featured web GUIs incredibly fast just by configuration.  
+You focus on programming business logic (REST services). 
 
-You will need `yarn` package mananger to be installed globally to run this project. Follow the instructions on https://yarnpkg.com/en/docs/install to install `yarn` if it is not already installed on your machine.
-Once installed you can verify it by running `yarn -v` on terminal. It should return whatever is the latest version mentioned on https://yarnpkg.com/en/docs/install.
+This [Node.js API package](https://www.npmjs.com/package/easy-web-app) 
+includes the [rest-web-gui](https://github.com/ma-ha/rest-web-ui) framework and make its usage comfortable and easy.
 
-## Install dependencies
+Focus is on **web applications** _(not simple web pages)_. 
+Available view types:
+* Forms, Tables, Lists, Trees, Histograms, Upload Files
+* Content: Markdown (also as Wiki), WikiML via MediaWiki API, plain HTML views, RSS-/atom-feeds or help dialogs
+* I/O: control switches/drawer, gauges, graphs, LEDs, displays, ...
+* Maps: POIs, routes, traffic, ...
+* Icons or icon rows with expands
+* Source code display
 
-Once yarn is installed run the following:
+Since v2.9.6 you can also host your own (private or customized) modules to implement your own view types or GUI functionality.
 
+Features:
+* Rich page haeder and footer
+* Flexible layout for multiple views on one page 
+* Page to page navigation with navigation tabs, menus, links, ...
+* i18n: switch language
+* Security: RESTful, HTTP Basic or OAuth authentication support, "Change Password" dialog with policy check, ... (see below)
+* Session data
+* CSS customizing and themes
+* layout alternatives: desktop / mobile phone / tablet detection 
+
+This is how it may look like:
+![demo screen shot](http://bit.ly/rest-web-gui-screenshot) 
+
+Have a look at the ["list" example](https://github.com/ma-ha/easy-web-app/tree/master/examples/list):
+![list demo screen shot](https://github.com/ma-ha/easy-web-app/raw/master/examples/list/pong-list.png) 
+
+
+Check out [docu on "rest-web-gui" GIT project](https://github.com/ma-ha/rest-web-ui/), 
+the [examples](https://github.com/ma-ha/easy-web-app/tree/master/examples/)
+and the [online demos](https://mh-svr.de/pong_dev) of all features.
+
+
+Check "[Release Notes](https://github.com/ma-ha/easy-web-app/blob/master/ReleaseNotes.md)" for latest changes in this version.
+
+By v2.3.0 you are able to use callbacks to inject dynamic configuration per request. 
+This gives you full flexibility to replace or customize title, header, navigation menu, rows or footer. 
+Have a look at the [example code](https://github.com/ma-ha/easy-web-app/blob/master/examples/dynamic-on-request/index.js).
+I needed dynamic configuration to do customizations and white-labeling per tenant in multi-tenant scenarios.
+
+## Compared with ...
+* jade
+  * jade is descriptive, but low level (HTML structure)
+  * jade is perfect for web pages, not for web applications
+* angular 
+  * angular can do everything, but web GUI programming is required 
+* react
+  * build web apps with JavaScript in a component way -- but not descriptive
+* vue.js
+  * still HTML (templating)
+
+They can all work behind the scenes, i.e. for view plug-ins. 
+
+## 20 sec Test
+Requires [node.ns installed](https://nodejs.org/en/download/) -- 
+which is always a good idea to have it.
+
+Get a local copy and start example:
+
+```bash
+git clone https://github.com/ma-ha/easy-web-app.git
+
+cd easy-web-app
+npm install
+ 
+cd examples
+cd simple
+node index.js
 ```
-make deps
+
+Now open the web app in your browser: [http://localhost:8888/](http://localhost:8888/)
+	
+## How does it work?
+To create a web application with one view you simple do:
+
+```javascript
+// initialize:
+var gui = require ( 'easy-web-app' )
+
+// start REST services and create a main page
+gui.init()  
+
+// Create a form view on the main page:
+gui.addView( 
+	{ ... view config JSON ... },
+	{ ... plug in config JSON ... } 
+)
 ```
 
-## Setup
+You'll find the full example here:
+[simple form](https://github.com/ma-ha/easy-web-app/blob/master/examples/simple/)
 
-There are two possible ways to setup Avni Webapp for developement:
+The idea is to define "page" containing different "views" in a JSON format and a "portal" as a set of "pages".
+This little package helps you to create the JSON configuration and 
+to set up [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) 
+web service to provide the page specification to the browser.
 
-1. You can setup the webapp in a way that it directly connects to the hosted API server so you don't have to setup local postgres database and Java API server. This is an easy way to get started as you don't have to worry about having to install Java and API Server. Also this will consume less resources on your system as you are not running API server.
-2. You can setup local postgres database and API server also locally and connect the webapp to that server. This is more difficult as it involves having to install Postgres, Java and running Java API Server.
+The JSON configuration of a whole page looks this way:
+* `title`: a simple String
+* `header` object
+  * `logoText` (String) or `logoURL` (String) 
+  * `modules`: Array of header plug-ins and their configuration
+* `rows`: an array of "views" or "columns" and their configuration 
+* `footer`
+  * `copyrightText` String 
+  * `modules`:  Array of footer modules and configurations for them
 
-#### 1. Setup to connect to hosted API Server (Samanvay hosted staging server)
+Inside the browser this is rendered to a full featured web app by
+[the "rest-web-gui" JavaScript framework and it's plug-ins](https://github.com/ma-ha/rest-web-ui/) -- magic!!
 
-1. Create a file named .env.development.local in root directory of avni-webapp
-2. Put the below content in this file:
+Tested on all modern browsers and devices (support alternate layouts for mobile phones and tablets is now a feature):
 
+![demo screen shot](https://raw.githubusercontent.com/ma-ha/easy-web-app/master/examples/gui-on-devices-s.png) 
+
+
+## First project (< 1 min)
+Requires [node.ns installed](https://nodejs.org/en/download/) -- 
+it really don't hurt and it's always a good idea to have.
+
+Create a demo folder and install _easy-web-app_ via _npm_
+
+```bash
+mkdir demo
+cd demo
+npm install easy-web-app
 ```
-REACT_APP_COGNITO_IN_DEV=true
-REACT_APP_AWS_REGION=ap-south-1
-REACT_APP_COGNITO_USER_POOL_ID=ap-south-1_hWEOvjZUH
-REACT_APP_COGNITO_APP_CLIENT_ID=7dbsrgg56mptr4ue1g65nv3s86
+
+Create a _simpleForm.js_ file with following content 
+(this is the [form example](https://github.com/ma-ha/easy-web-app/blob/master/examples/simple/index.js)):
+
+```javascript
+/** Simple example: Create a web page with form */
+var gui = require ( 'easy-web-app' )
+
+/** Initialize the framework, the default page and define a title */
+gui.init ( 'My 1st Test' )
+
+/**
+ * Add a view of type "pong-easy-form" (= plug-in) to the default page the first
+ * parameter of addView is the view configuration, a second parameter can define
+ * the plug-in configuration, a third parameter can specify the page.
+ */
+gui.addView ( 
+  {
+    'id'   : 'myFirstView',
+    'type' : 'pong-easyform'
+  },
+  {
+    "id" : "tstFormId",
+    "easyFormFields" : [ 
+        "id"
+      , "c1|Name"
+      , "c1|Date|date"
+      , "c1|separator"
+      , "c1|Remark|3rows"
+      , "c2|Mailings|label"   // second starts here column
+      , "c2|Send~Ads~~|checkbox_infomails_ads"
+      , "c2|Newsletter|checkbox_infomails_newsletter"
+      , "c2|Pass~Word" 
+    ],
+    "actions" : [ 
+      {
+        "id" : "Chk",
+        "actionName" : "Check",
+        "actionURL"  : "svc/test/check"
+      }
+    ]
+  }
+)
 ```
 
-3. Set the value of "proxy" field in package.json to "https://staging.avniproject.org".
-4. Run `make start`
-5. It will start the app on http://http://localhost:6010/. It will ask you for login. If you dont' know the credentials ping us on #openchs channel on Gitter.
+Run the demo:
 
-#### 2. Setup to connect to your local API Server
+	npm install easy-web-app
+	node simpleForm.js
+	
+Open the URL [http://localhost:8888/](http://localhost:8888/) in your Browser.
 
-1. Start your Java Server. For this refer to [product developement setup document](https://avni.readme.io/docs/developer-environment-setup-ubuntu#server-side-components).
-2. Run `make start` in avni-webapp directory.
-3. It will assume whatever user you started the Java Server with since we don't do authentication when running the server locally. If you want to change the user then restart the webapp after setting environment variable `REACT_APP_DEV_ENV_USER` to user you want. E.g. start the server like `REACT_APP_DEV_ENV_USER=ihmp-admin make start`.
+Remark: To keep this demo simple, there is no REST web service for the 
+"Check" button shown here. 
 
-## Contributing
+## Security
+.. made easy! You get a best practice implementaion for 
+application security by confguration including 
+* login menu / login dialog
+* authentication and authorization (hooks)
+* authentication can force password change
+* session handling and session timeout
+* API for web service authorization 
+* secure session cookie handling
+* change-password-dialog with password policy check
+* (secure) logout 
+* page redirects for unautorized requests
+* CSRF protection
+* click hijacking detection (user alert)
+* OAuth2 option for web services 
+* OpenID Connect authentication (login redirect) option
 
-#### Pull requests
+The [security example](https://github.com/ma-ha/easy-web-app/tree/master/examples/security) 
+shows how to write a secure web app in 100 LoC. 
 
-- Please make sure that your code follows guidelines given in https://avni.readme.io/v2.0/docs/contribution-guide.
+## Examples and API Reference
+Have a look at [some feature demos](https://github.com/ma-ha/easy-web-app/tree/master/examples/),
+which also contains a form tutorial.
 
-#### File/folder structure
+The [API Reference](https://github.com/ma-ha/easy-web-app/blob/master/API-Reference.md)
+contains all JS API and all implemented REST web services.
 
-- There are multiple apps inside this repository
-  - Admin (Allow admins to do admin work like creating organisations, users, locations)
-  - App Designer (Allow admins to design the app)
-  - Reports (Allow admins to download longitudnal reports)
-  - Translations (Allow admins to upload translations)
-  - Data Entry App (Allow users to do data entry using web based app)
-- Folders per route/feature
-  (See https://marmelab.com/blog/2015/12/17/react-directory-structure.html)
-- Reducers and actions in 'ducks' structure (See https://github.com/erikras/ducks-modular-redux). This is not applicable for App Designer as it does not use Redux.
+## Feedback and Support
+Please tell me what you like and what I need to improve! I'm also interested in use cases you do. 
 
-#### Code Style
+Please contact me: 
 
-- We use Prettier for javascript/jsx formatting. You can use your IDE/Editor specific Plugin to format code using Prettier. Alternatively there is also a command `make prettier-all` that will format all files in src folder using Prettier. And there also is a git precommit hook that formats staged files using prettier before commiting.
+![email address](https://raw.githubusercontent.com/ma-ha/easy-web-app/master/email.png) 
 
-#### Continuous Integration
-
-All commits are built and tested and deployed to staging if tests succeed. Build status can be seen at https://circleci.com/gh/OpenCHS/openchs-webapp. Please run tests using `make test` before you push your code so you don't end up breaking things unnecessarily.
+How can I help you?

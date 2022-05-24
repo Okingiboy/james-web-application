@@ -1,0 +1,54 @@
+#header {
+  font-style: italic;
+  color: #DD0;
+}
+
+/* FOR MOBILE PHONE VIEWPORTS ======================================== */
+@media screen and (max-device-width: 480px) {
+  /*--- iPhone only CSS here ---*/
+
+  body {
+    margin:0px;
+  } 
+
+  #header {
+    height: 142px;
+  }
+
+  #feedbackView {
+    display: none;
+  }
+
+  #maindiv {
+    width:320px;
+    margin: 0 auto;
+  }
+
+  .pong-navbar {
+    position: absolute;
+    top: 105px;
+  }
+}
+
+
+@media only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape) {
+  /* For landscape layouts only */
+  
+  body {
+    margin:0px;
+  } 
+
+  #header {
+    height: 142px;
+  }
+
+  #feedbackView {
+    display: none;
+  }
+  
+  #maindiv {
+    width:667px;
+    margin: 0 auto;
+  }
+
+}

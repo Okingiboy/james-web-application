@@ -1,0 +1,84 @@
+/* You can add all your custom styles here */
+body {
+	font-family: "Trebuchet MS", "Helvetica", "Arial", "Verdana",
+		"sans-serif";
+	color: #55F;
+  background-color: #55F;
+}
+
+#headerdiv {
+  background-color: #33F;
+}
+#header {
+	color: #DDD;
+	background-image: url(g4631.png);
+	background-size: auto 100%;
+	background-repeat: no-repeat;
+	background-color: #33F;
+}
+
+.header-logo {
+	padding-top: 2px;
+	padding-left: 180px;
+}
+
+.pong-navbar {
+  position: absolute;
+  left: 90px;
+}
+
+#footerdiv {
+  background-color: #33F;
+}
+#footer {
+	color: #FFF;
+	height: 30px;
+	background-color: #33F;
+}
+
+#footer a:link {
+	color: #DFD;
+}
+
+#footer a:visited {
+	color: #DFD;
+}
+
+#footer a:hover {
+	color: #FFF;
+}
+
+#footer a:active {
+	color: #FFF;
+}
+
+#footer .copyright-div {
+	color: #FFF;
+  position: absolute;
+  top: 10px;
+}
+
+#maindiv {
+	margin: 0 auto;
+}
+
+.decor-inner {
+	background-color: #DDF;
+}
+
+
+.tedge-inner {
+	background-color: #DDD;
+}
+
+.tedge-tm, .tedge-tl, .tedge-tr, 
+.tedge-lm, .tedge-rm,
+.tedge-bl, .tedge-bm, .tedge-br {
+	background-color: #55F;
+}
+#Lorem {
+  height: 335px;
+}
+#LoremContent {
+  width: 97.5%;
+}

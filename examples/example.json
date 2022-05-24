@@ -1,0 +1,49 @@
+{
+	"layout":{
+		"title":"Test",
+		"header":{
+			"logoText":"Table Demo",
+			"modules":[
+				{ 	"id":"MainNav",
+					"type":"pong-navbar",
+					"param":{
+						"confURL":"/svc/nav"
+					}
+				}
+			]
+		},
+		"rows":[
+			{ 	"rowId":"tableView",
+				"title":"Dummy Table ........ Click on one of the \"Descriptions\" and edit it or try out button there ----->",
+				"decor":"decor",
+				"height":"400px",
+				"resourceURL":"/products",
+				"type":"pong-easytable",
+				"moduleConfig":{
+					"pollDataSec":"120",
+					"easyCols":[
+						"*ID|5%",
+						"Name=Name.0",
+						"ProductPage_linkForCol_1",
+						"Picture",
+						"ZoomImg_zooms_Picture",
+						"Status_checkbox",
+						"Rating",
+						"Description_editable",
+						"Product~Page_link"
+					],
+					"maxRows":"5"
+				}
+			}
+		],
+		"footer":{
+			"copyrightText":"powered by <a href=\"https://github.com/ma-ha/rest-web-ui\">ReST-Web-GUI</a>",
+			"modules":[
+				{	"id":"feedbackView",
+					"type":"pong-feedback",
+					"param":{ }
+				}
+			]
+		}
+	}
+}

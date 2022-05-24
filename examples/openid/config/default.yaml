@@ -1,0 +1,7 @@
+# Get the following values from Auth0:
+CLIENT_ID: IrjeLbb7XiCYZcNVFT4PJFby0iO8IIR3
+ISSUER: https://dev-ie96lzx0.eu.auth0.com/
+JWKS_URI: https://dev-ie96lzx0.eu.auth0.com/.well-known/jwks.json
+AUDIENCE: http://localhost:8111/security2demo/
+AUTH_DOMAIN: dev-ie96lzx0.eu.auth0.com
+AUTH_SCOPE: 'read:all'
