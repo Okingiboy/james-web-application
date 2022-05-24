@@ -1,0 +1,88 @@
+import React from "react";
+import { map, filter, get } from "lodash";
+import { Button, makeStyles } from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
+import { cognitoInDev, devEnvUserName, isDevEnv } from "../../../../../common/constants";
+import Auth from "@aws-amplify/auth";
+import { extensionScopeTypes } from "../../../../../formDesigner/components/Extensions/ExtensionReducer";
+import api from "../../../../api";
+
+const useStyles = makeStyles(theme => ({
+  buttonStyle: {
+    textTransform: "none",
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    color: "#FFFFFF",
+    backgroundColor: "#0000ff",
+    "&:hover": {
+      backgroundColor: "#0000A2"
+    },
+    marginBottom: theme.spacing(2)
+  }
+}));
+
+export const ExtensionOption = ({
+  subjectUUIDs,
+  typeUUID,
+  typeName,
+  scopeType,
+  configExtensions
+}) => {
+  const classes = useStyles();
+  const [extensions, setExtensions] = React.useState([]);
+
+  React.useEffect(() => {
+    if (!configExtensions) {
+      api.fetchOrganisationConfigs().then(config => {
+        const extensions = get(config, "organisationConfig.extensions", []);
+        setExtensions(extensions);
+      });
+    } else {
+      setExtensions(configExtensions);
+    }
+  }, []);
+  const isSearchScope = (scopeType, extensionScope) =>
+    scopeType === extensionScopeTypes.searchResults &&
+    extensionScope === extensionScopeTypes.searchResults;
+  const filteredSettings = filter(
+    extensions,
+    ({ extensionScope }) =>
+      isSearchScope(scopeType, extensionScope.scopeType) ||
+      (typeUUID === extensionScope.uuid &&
+        typeName === extensionScope.name &&
+        scopeType === extensionScope.scopeType)
+  );
+  const serverURL = isDevEnv ? "http://localhost:8021" : window.location.origin;
+
+  const clickHandler = async fileName => {
+    let token = "";
+    if (!isDevEnv || cognitoInDev) {
+      const currentSession = await Auth.currentSession();
+      token = `AUTH-TOKEN=${currentSession.idToken.jwtToken}`;
+    } else {
+      token = `user-name=${devEnvUserName}`;
+    }
+    const params = `subjectUUIDs=${subjectUUIDs}&${token}`;
+    window.open(`${serverURL}/extension/${fileName}?${params}`, "_blank");
+  };
+
+  return (
+    <Grid item container xs={12} direction={"row-reverse"} spacing={1}>
+      {map(filteredSettings, ({ label, fileName }, index) => {
+        return (
+          <Grid item key={label + index}>
+            <Button
+              id={label}
+              className={classes.buttonStyle}
+              onClick={() => {
+                clickHandler(fileName);
+              }}
+            >
+              {label}
+            </Button>
+          </Grid>
+        );
+      })}
+    </Grid>
+  );
+};

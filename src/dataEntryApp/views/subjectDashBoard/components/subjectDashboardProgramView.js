@@ -1,0 +1,320 @@
+import React, { useEffect } from "react";
+import Grid from "@material-ui/core/Grid";
+import { makeStyles } from "@material-ui/core/styles";
+import { Paper } from "@material-ui/core";
+import ExpansionPanel from "@material-ui/core/ExpansionPanel";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
+import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import Typography from "@material-ui/core/Typography";
+import SubjectButton from "./Button";
+import { useTranslation } from "react-i18next";
+import { undoExitEnrolment } from "../../../reducers/programEnrolReducer";
+import { withRouter } from "react-router-dom";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { InternalLink, withParams } from "../../../../common/components/utils";
+import { getProgramEnrolmentForm } from "../../../reducers/programSubjectDashboardReducer";
+import { filter, get, isEmpty, isNil } from "lodash";
+import {
+  clearVoidServerError,
+  voidProgramEncounter,
+  voidProgramEnrolment
+} from "../../../reducers/subjectDashboardReducer";
+import ConfirmDialog from "../../../components/ConfirmDialog";
+import MessageDialog from "../../../components/MessageDialog";
+import {
+  fetchProgramSummary,
+  selectFetchingRulesResponse,
+  selectProgramSummary
+} from "../../../reducers/serverSideRulesReducer";
+import { RuleSummary } from "./RuleSummary";
+import { extensionScopeTypes } from "../../../../formDesigner/components/Extensions/ExtensionReducer";
+import { ExtensionOption } from "./extension/ExtensionOption";
+import { EnrolmentDetails } from "./EnrolmentDetails";
+import PlannedVisitsTable from "../PlannedVisitsTable";
+import CompletedVisits from "./CompletedVisits";
+
+const useStyles = makeStyles(theme => ({
+  programLabel: {
+    fontSize: "18px",
+    fontWeight: "500"
+  },
+  growthButtonStyle: {
+    marginBottom: theme.spacing(2),
+    height: "28px",
+    boxShadow: "none",
+    marginRight: "10px",
+    marginLeft: "120px",
+    backgroundColor: "#0e6eff"
+  },
+  vaccinationButtonStyle: {
+    marginBottom: theme.spacing(2),
+    boxShadow: "none",
+    height: "28px",
+    backgroundColor: "#0e6eff"
+  },
+  newProgVisitButtonStyle: {
+    marginBottom: theme.spacing(2),
+    boxShadow: "none",
+    height: "28px",
+    marginLeft: "10px",
+    backgroundColor: "#0e6eff"
+  },
+  root: {
+    flexGrow: 1,
+    padding: theme.spacing(2),
+    boxShadow: "0px 0px 4px 0px rgba(0,0,0,0.3)"
+  },
+  expansionPanel: {
+    marginBottom: "11px",
+    borderRadius: "5px",
+    boxShadow:
+      "0px 0px 3px 0px rgba(0,0,0,0.4), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12)"
+  },
+  paper: {
+    textAlign: "left",
+    boxShadow: "none",
+    borderRadius: "0px",
+    borderRight: "1px solid #dcdcdc",
+    padding: "0px"
+  },
+  programStatusStyle: {
+    color: "red",
+    backgroundColor: "#ffeaea",
+    fontSize: "12px",
+    padding: "2px 5px"
+  },
+  expansionHeading: {
+    fontSize: theme.typography.pxToRem(16),
+    flexBasis: "33.33%",
+    flexShrink: 0,
+    fontWeight: "500"
+  },
+  listItem: {
+    paddingBottom: "0px",
+    paddingTop: "0px"
+  },
+  ListItemText: {
+    "& span": {
+      fontSize: "14px"
+    },
+    color: "#2196f3",
+    fontSize: "14px",
+    textTransform: "uppercase"
+  },
+  listItemTextDate: {
+    "& span": {
+      fontSize: "15px",
+      color: "#555555"
+    }
+  },
+  tableContainer: {
+    border: "1px solid rgba(224, 224, 224, 1)"
+  },
+  abnormalColor: {
+    color: "#ff4f33"
+  },
+  expandMoreIcon: {
+    color: "#0e6eff"
+  },
+  visitButton: {
+    marginLeft: "8px",
+    fontSize: "14px"
+  },
+  gridBottomBorder: {
+    borderBottom: "1px solid rgba(0,0,0,0.12)",
+    paddingBottom: "10px"
+  },
+  infomsg: {
+    marginLeft: 10
+  },
+  visitAllButton: {
+    marginLeft: "20px",
+    marginBottom: "10px"
+  }
+}));
+
+const ProgramView = ({
+  programData,
+  subjectUuid,
+  undoExitEnrolment,
+  handleUpdateComponent,
+  subjectTypeUuid,
+  subjectVoided,
+  programEnrolmentForm,
+  getProgramEnrolmentForm,
+  subjectProfile,
+  voidError,
+  clearVoidServerError,
+  voidProgramEnrolment,
+  voidProgramEncounter
+}) => {
+  React.useEffect(() => {
+    const formType = programData.programExitDateTime ? "ProgramExit" : "ProgramEnrolment";
+    getProgramEnrolmentForm(
+      subjectProfile.subjectType.name,
+      programData.program.operationalProgramName,
+      formType
+    );
+  }, [programData]);
+
+  const classes = useStyles();
+  const { t } = useTranslation();
+  const isNotExited = isNil(programData.programExitDateTime);
+
+  const [voidConfirmation, setVoidConfirmation] = React.useState(false);
+  const [isExpanded, setIsExpanded] = React.useState(false);
+  const dispatch = useDispatch();
+
+  const programSummary = useSelector(selectProgramSummary);
+  const isFetchingSummary = useSelector(selectFetchingRulesResponse);
+
+  useEffect(() => {
+    dispatch(fetchProgramSummary(programData.uuid));
+  }, [dispatch, programData]);
+
+  const plannedVisits = filter(
+    get(programData, "encounters", []),
+    ({ voided, encounterDateTime, cancelDateTime }) =>
+      !voided && isNil(encounterDateTime) && isNil(cancelDateTime)
+  );
+
+  return (
+    <div>
+      <Grid container>
+        <ExtensionOption
+          subjectUUIDs={subjectProfile.uuid}
+          typeUUID={programData.program.uuid}
+          typeName={programData.program.operationalProgramName}
+          scopeType={extensionScopeTypes.programEnrolment}
+        />
+        <Grid item xs={4} container direction="row" justify="flex-start" alignItems="flex-start">
+          <label className={classes.programLabel}>
+            {t(programData.program.operationalProgramName)} {t("programdetails")}
+          </label>
+        </Grid>
+
+        <Grid item xs={8} container direction="row" justify="flex-end" alignItems="flex-start">
+          {!subjectVoided && isNotExited ? (
+            <InternalLink
+              id={"new-program-visit"}
+              to={`/app/subject/newProgramVisit?enrolUuid=${programData.uuid}`}
+              noUnderline
+            >
+              <SubjectButton btnLabel={t("newProgramVisit")} />
+            </InternalLink>
+          ) : (
+            ""
+          )}
+        </Grid>
+      </Grid>
+      <Paper className={classes.root}>
+        <RuleSummary
+          title={"programSummary"}
+          isFetching={isFetchingSummary}
+          summaryObservations={programSummary}
+        />
+        {programData && programData.programExitDateTime && (
+          <EnrolmentDetails
+            t={t}
+            isExit={true}
+            label={"programExitDetails"}
+            programData={programData}
+            programEnrolmentForm={programEnrolmentForm}
+            subjectUuid={subjectUuid}
+            subjectProfile={subjectProfile}
+            undoExitEnrolment={undoExitEnrolment}
+            handleUpdateComponent={handleUpdateComponent}
+            setVoidConfirmation={setVoidConfirmation}
+          />
+        )}
+        <EnrolmentDetails
+          t={t}
+          isExit={false}
+          label={"enrolmentDetails"}
+          programData={programData}
+          programEnrolmentForm={programEnrolmentForm}
+          subjectUuid={subjectUuid}
+          subjectProfile={subjectProfile}
+          undoExitEnrolment={undoExitEnrolment}
+          handleUpdateComponent={handleUpdateComponent}
+          setVoidConfirmation={setVoidConfirmation}
+        />
+        <ExpansionPanel className={classes.expansionPanel}>
+          <ExpansionPanelSummary
+            expandIcon={<ExpandMoreIcon className={classes.expandMoreIcon} />}
+            aria-controls="plannedVisitPanelbh-content"
+            id="planned-program-encounter-details"
+          >
+            <Typography component={"span"} className={classes.expansionHeading}>
+              {t("plannedVisits")}
+            </Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails style={{ padding: 0, display: "block" }}>
+            <PlannedVisitsTable
+              plannedVisits={plannedVisits || []}
+              doBaseUrl={`/app/subject/programEncounter?encounterUuid`}
+              cancelBaseURL={`/app/subject/cancelProgramEncounter?uuid`}
+              onDelete={uuid => voidProgramEncounter(uuid)}
+              deleteTitle={"ProgramEncounterVoidAlertTitle"}
+              deleteMessage={"ProgramEncounterVoidAlertMessage"}
+            />
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+        <ExpansionPanel className={classes.expansionPanel} onChange={() => setIsExpanded(p => !p)}>
+          <ExpansionPanelSummary
+            expandIcon={<ExpandMoreIcon className={classes.expandMoreIcon} />}
+            aria-controls="completedVisitPanelbh-content"
+            id="completed-program-encounter-details"
+          >
+            <Typography component={"span"} className={classes.expansionHeading}>
+              {t("completedVisits")}
+            </Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails style={{ padding: 0, display: "block" }}>
+            {isExpanded && (
+              <CompletedVisits entityUuid={programData.uuid} isForProgramEncounters={true} />
+            )}
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+      </Paper>
+      <ConfirmDialog
+        title={t("ProgramEnrolmentVoidAlertTitle")}
+        open={voidConfirmation}
+        setOpen={setVoidConfirmation}
+        message={t("ProgramEnrolmentVoidAlertMessage")}
+        onConfirm={() => voidProgramEnrolment(programData.uuid)}
+      />
+      <MessageDialog
+        title={t("ProgramEnrolmentErrorTitle")}
+        open={!isEmpty(voidError)}
+        message={voidError}
+        onOk={clearVoidServerError}
+      />
+    </div>
+  );
+};
+
+const mapStateToProps = state => ({
+  subjectProgram: state.dataEntry.subjectProgram.subjectProgram,
+  subjectProfile: state.dataEntry.subjectProfile.subjectProfile,
+  programEnrolmentForm: state.dataEntry.subjectProgram.programEnrolmentForm,
+  voidError: state.dataEntry.subjectProfile.voidError
+});
+
+const mapDispatchToProps = {
+  undoExitEnrolment,
+  getProgramEnrolmentForm,
+  voidProgramEnrolment,
+  clearVoidServerError,
+  voidProgramEncounter
+};
+
+export default withRouter(
+  withParams(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(ProgramView)
+  )
+);
